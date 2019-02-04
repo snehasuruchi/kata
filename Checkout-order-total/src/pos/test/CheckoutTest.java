@@ -18,13 +18,22 @@ public class CheckoutTest {
 	}
 	
 	
+
 	@Test
-	public void testTheItemPrice(){
+	public void testTheItemPriceOfPepsi(){
 		price = pitems.getItemPrice("pepsi", 1);
 		String priceStr = Double.toString(price);
 		assertEquals("1.5",priceStr);
 		
 	}
+	
+	
+	@Test
+	public void testTheItemPriceOfOnion(){
+		price = pitems.getItemPrice("onions", 2);
+		String priceStr = Double.toString(price);
+		assertEquals("3.0",priceStr);
+		}
 	
 	@Test
 	public void checkTotalPriceFor1PepsiAnd1Onion(){

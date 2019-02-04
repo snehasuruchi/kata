@@ -13,21 +13,30 @@ public class ProcessItems {
     double numsOfUnit;
     boolean ScanContinue = true;
     public double checkoutTotal =0;
+    
   // Create a hash map
   HashMap<String,String> itemUOM = new HashMap<String,String>();
   
   HashMap<String,Double> itemPriceList = new HashMap<String,Double>();
   
+  HashMap<String,Double> itemMarkedDownPriceList = new HashMap<String,Double>();
+  
   Scanner scanner = new Scanner(System.in);
   
   
   public ProcessItems(){
+	  
+	  
 	// Put default items to the itemUOM map
   itemUOM.put("pepsi", "ea");
   itemUOM.put("soup", "ea");
   itemUOM.put("oranges", "lb");
   itemUOM.put("onions", "lb");
   itemUOM.put("avocado", "ea");
+  itemUOM.put("pineapple","ea");
+  itemUOM.put("cauliflower","ea");
+  itemUOM.put("celery","ea");
+
   
 //Put default items to the itemPriceList map
   itemPriceList.put("pepsi", 1.5);
@@ -35,6 +44,10 @@ public class ProcessItems {
   itemPriceList.put("oranges",1.40);
   itemPriceList.put("onions",1.5);
   itemPriceList.put("avocado",1.10);
+  itemPriceList.put("pineapple",1.29);
+  itemPriceList.put("cauliflower",2.50);
+  itemPriceList.put("celery",1.50);
+  
   
   }
   
@@ -95,9 +108,9 @@ public class ProcessItems {
   
   //Method to calculate the price of the item
   public double getItemPrice(String item,double noOfUnits){
-	  price = itemPriceList.get(item)*noOfUnits;
+	   price = itemPriceList.get(item)*noOfUnits;
 	 return price;
-	  }
+  }
   
   
   //Method to remove an item 

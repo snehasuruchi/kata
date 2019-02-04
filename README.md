@@ -12,17 +12,17 @@ Since there is no database, I have hard coded the UOM and list of Default items 
 
 Program will ask User to enter item name. 
 Currently the Valid items are
-pepsi,soup,oranges,onions,avocado.
+pepsi,soup,oranges,onions,avocado,pineapple,cauliflower,celery.
 Price and UOM is maintained only for these items.
 
-Based on the UOM EA or LB program will ask to enter Quantity or Weight of the item and print the price
+Based on the UOM - EA or LB program will ask to enter Quantity or Weight of the item and print the price
 
 If user wants to cancel any entered item, he can press 'X' and enter the name and quantity of items to cancel.
 
-When the is done scanning and ready for checkout he will press the button R and complete the process.
+When the user is done scanning and ready for checkout he will press the button 'R' and complete the process.
 
 
-I have not included Markdown and Weekly Specials logic as of now.
+I am still working on the marked down price items.
 
 
 **********************************************************************************************************************
@@ -38,15 +38,15 @@ Total is : 6.0
 Enter the item: 
 onions
 Enter the weight: 
-4
-Total is : 12.0
+2
+Total is : 9.0
 Enter the item: 
 X
 Enter the item you want to cancel: 
 pepsi
 Enter the quantity of items to cancel: 
 1
-Total is : 10.5
+Total is : 7.5
 Enter the item: 
 r
 Thanks For Shopping with Us
