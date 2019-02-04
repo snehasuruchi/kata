@@ -70,7 +70,7 @@ public class ProcessItems {
 	  }
 	  else if (getItemUOM(item).equals("lb"))
 	  {
-		  System.out.println("Enter the weight in LBS : ");
+		  System.out.println("Enter the weight in LBS: ");
 		  weight = scanner.nextDouble();
 		  numsOfUnit=weight;
 	  }
