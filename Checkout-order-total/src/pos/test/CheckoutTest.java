@@ -35,5 +35,23 @@ public class CheckoutTest {
 		assertEquals("3.0",priceStr);
 		
 	}
+	
+	@Test
+	public void TestItemCancellationForPepsi2Units(){
+		
+		double cancelItems  = pitems.cancelItem();
+		String cancelStrItems = Double.toString(cancelItems);
+		assertEquals("-2.0",cancelStrItems );
+		
+	}
+	
+	@Test
+	public void checkTotalPriceFor4PepsiAnd2CancelledPepsi(){
+		pitems.processInputItem();
+		double totalPrice  = pitems.checkoutTotal;
+		String priceStr = Double.toString(totalPrice);
+		assertEquals("3.0",priceStr);
+		
+	}
 
 }

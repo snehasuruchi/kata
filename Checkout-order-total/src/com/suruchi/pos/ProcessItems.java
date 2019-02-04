@@ -41,6 +41,7 @@ public class ProcessItems {
   //Method to get the scanned item
   public void processInputItem(){
 	  System.out.println("Press R when ready for checkout");
+	  System.out.println("Press X for item cancellation");
 	  System.out.println("Enter the item: ");
 	  while(ScanContinue)
 	  {
@@ -52,6 +53,14 @@ public class ProcessItems {
 		  System.out.println("Thanks For Shopping with Us");
 		  continue;
 	  }
+	   
+	   else if (item.equalsIgnoreCase("X"))
+		  {
+			  //ScanContinue = false;
+		   	   numsOfUnit=cancelItem();
+			  
+		  }
+	   
 	  
 	  else if (getItemUOM(item).equals("ea")){
 	  System.out.println("Enter the quantity: ");
@@ -67,10 +76,13 @@ public class ProcessItems {
 	  }
 
 		printOutput(item,numsOfUnit); 
-		 System.out.println("Total is : "+checkoutTotal);
+		 
 	  System.out.println("Enter the item: ");
    }
+	  
+	  
   }
+  
    
   //Method to get the items corresponding Unit of Measurement
   public String getItemUOM(String item){ 
@@ -88,9 +100,30 @@ public class ProcessItems {
 	  }
   
   
+  //Method to remove an item 
+  public double cancelItem(){
+	  double cancelledNumsOfUnit=0;
+	  System.out.println("Enter the item you want to cancel: ");
+	  item= scanner.next();
+	   if (getItemUOM(item).equals("ea")){
+		  System.out.println("Enter the quantity of items to cancel: ");
+		  quantity = scanner.nextDouble();
+		  cancelledNumsOfUnit=quantity*-1;
+		  
+		  }
+		  else if (getItemUOM(item).equals("lb"))
+		  {
+			  System.out.println("Enter the weight of the item you want to cancel: ");
+			  weight = scanner.nextDouble();
+			  cancelledNumsOfUnit=weight*-1;
+		  }
+	   return cancelledNumsOfUnit; 
+  }
+  
   public void printOutput(String printItem,double printNumsOfUnit){
 	  
+	  
 	  checkoutTotal = checkoutTotal + getItemPrice(printItem,printNumsOfUnit);
-	 
+	  System.out.println("Total is : "+checkoutTotal);
   }
 }
