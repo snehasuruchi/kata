@@ -62,4 +62,14 @@ public class CheckoutTest {
 		
 	}
 
+	@Test
+	public void testMarkdownPriceFor2Pineapple(){
+		price = pitems.getItemPrice("pineapple", 2);
+		String priceStr = Double.toString(price);
+		assertEquals("2.18",priceStr);
+		
+		
+		
+		
+	}
 }
