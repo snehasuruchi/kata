@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 import org.junit.Test;
 
+import com.suruchi.pos.rules.SpecialRules;
+
 public class ProcessItems {
 	
 	String item;
@@ -14,12 +16,18 @@ public class ProcessItems {
     boolean ScanContinue = true;
     public double checkoutTotal =0;
     
-  // Create  hash map
+  // Items with its Unit of Measurement HashMap
   HashMap<String,String> itemUOM = new HashMap<String,String>();
   
+  //Items with its Price HashMap
   HashMap<String,Double> itemPriceList = new HashMap<String,Double>();
   
+  //Items with its  Marked down price HashMap
   HashMap<String,Double> itemMarkedDownPriceList = new HashMap<String,Double>();
+  
+  //weekly special items
+  HashMap<String,String> weeklySpecials = new HashMap<String,String>();
+  
   
   Scanner scanner = new Scanner(System.in);
   
@@ -36,6 +44,7 @@ public class ProcessItems {
   itemUOM.put("pineapple","ea");
   itemUOM.put("cauliflower","ea");
   itemUOM.put("celery","ea");
+  itemUOM.put("Eggs","ea");
 
   
 //Put default items to the itemPriceList map
@@ -47,6 +56,7 @@ public class ProcessItems {
   itemPriceList.put("pineapple",1.29);
   itemPriceList.put("cauliflower",2.50);
   itemPriceList.put("celery",1.50);
+  itemPriceList.put("Eggs",1.50);
   
 //Put items to the itemMarkedDownPriceList map
   
@@ -55,8 +65,12 @@ public class ProcessItems {
   itemMarkedDownPriceList.put("avocado", .50);
   itemMarkedDownPriceList.put("pepsi", 1.20);
   itemMarkedDownPriceList.put("cauliflower", 1.20);
-  itemMarkedDownPriceList.put("celery", 0.99);
+  //itemMarkedDownPriceList.put("celery", 0.99);
   
+  
+  //Put items in the weeklySpecial map
+  weeklySpecials.put("Eggs", "BNGMPX-1:1:100:5");
+  weeklySpecials.put("celery", "BNGMPX-2:1:50:U");
   
   
   }
@@ -119,16 +133,15 @@ public class ProcessItems {
   //Method to calculate the price of the item
   public double getItemPrice(String item,double noOfUnits){
 	  //getting the item's price from the marked down list
-	  Double markedDownItem = itemMarkedDownPriceList.get(item);
-	   if(markedDownItem == null){
-	  price = itemPriceList.get(item)*noOfUnits;
-	
-	   }
-	   else
-	   {
-		   price = itemMarkedDownPriceList.get(item)*noOfUnits;
+	 
+	  
+	  if(itemPriceList.get(item) == null){
+		  price = 0;
 	  }
-	   return price;
+	  else{
+		  price = itemPriceList.get(item)*noOfUnits;
+	  }
+	  return price;
   }
    
   
@@ -154,8 +167,78 @@ public class ProcessItems {
   
   public void printOutput(String printItem,double printNumsOfUnit){
 	  
+	  double specialsPrice = 0;
+	  double standardPrice = 0;
 	  
-	  checkoutTotal = checkoutTotal + getItemPrice(printItem,printNumsOfUnit);
-	  System.out.println("Total is : "+checkoutTotal);
+	  standardPrice = getItemPrice(printItem,printNumsOfUnit);
+	  specialsPrice = getItemMarkedDownPrice(printItem,printNumsOfUnit);
+	  //If MarkDown is not maintained then check the weekly special rules
+	      if(specialsPrice==0 & !(weeklySpecials.get(item) == null))
+	      {
+	    	  String ruleName = weeklySpecials.get(item);
+	    	    if (ruleName.startsWith("BNGMPX"))
+	    			   {		   
+	    	           SpecialRules sr = new SpecialRules();
+	    	           ruleName = ruleName.replaceAll("BNGMPX-", "");
+	    	           String[] splittedValues = ruleName.split(":");
+	    	           
+	    	           double noOfItemsRule = Double.valueOf(splittedValues[0]);
+	    	           double noOfSpecialItemsRule = Double.valueOf(splittedValues[1]);
+	    	           double discountRate = Double.valueOf(splittedValues[2]);
+	    	           double ItemLimit = 0;
+	    	           if(!splittedValues[3].equals("U"))
+	    	        		   {
+	    	        	         ItemLimit = Double.valueOf(splittedValues[3]);
+	    	        		   }
+	    	           
+	    	           //Check Allowed Limits. Process only if allowed number of units	    	        			 
+	    	           if(ItemLimit > printNumsOfUnit || splittedValues[3].equals("U"))
+	    	           {
+	    	        	 // Calculate Quantities based on Rules and Input
+	    	        	  // If the rule says Buy 1 Get 1 free and user bought 100 items so only 50 items will be charged
+	    	        	   double WeightageRemainder = printNumsOfUnit % (noOfItemsRule+noOfSpecialItemsRule);
+	    	        	   // Make sure to have the quantity which can be distributed as per rule
+	    	        	   printNumsOfUnit = printNumsOfUnit - WeightageRemainder;
+	    	        	   double noOfItems = printNumsOfUnit * (noOfItemsRule/(noOfItemsRule+noOfSpecialItemsRule));
+	    	        	   double noOfSpecialItems = printNumsOfUnit * (noOfSpecialItemsRule/(noOfItemsRule+noOfSpecialItemsRule));
+	    	        	   
+	    	        	   specialsPrice = sr.getPriceBNGMPX(printItem, noOfItems, noOfSpecialItems, discountRate);
+	    	            // Add the Standard Price of Remainder
+	    	        	   specialsPrice = specialsPrice + getItemPrice(printItem,WeightageRemainder);
+	    			   }
+	    	  
+	      
+	      }
+	  }
+	  
+	  
+			  if(specialsPrice>0){
+				 
+				  System.out.println("Your Special price is : "+specialsPrice);
+				  double differencePrice = standardPrice - specialsPrice;
+				  checkoutTotal = checkoutTotal +specialsPrice; 
+				  System.out.println("Total is : "+checkoutTotal);
+				  System.out.println("You save: " + differencePrice + " on "+printItem);
+			  }else
+			  {
+				  checkoutTotal = checkoutTotal +  standardPrice;
+				  System.out.println("Total is : "+checkoutTotal);
+			  }
+			  
+	  
+  }
+  
+  //Method to calculate the marked down price of item
+  public double getItemMarkedDownPrice(String item,double noOfUnits){
+	  Double markedDownItemPrice = itemMarkedDownPriceList.get(item);
+	  
+	  if(markedDownItemPrice == null){
+		  price = 0;
+	  }
+	  else{
+		  price = markedDownItemPrice*noOfUnits;
+	  }
+	  return price;
+	  
   }
 }
