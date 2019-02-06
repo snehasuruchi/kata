@@ -1,9 +1,6 @@
 package com.suruchi.pos;
 import java.util.HashMap;
 import java.util.Scanner;
-
-import org.junit.Test;
-
 import com.suruchi.pos.rules.SpecialRules;
 
 public class ProcessItems {
@@ -23,7 +20,7 @@ public class ProcessItems {
   HashMap<String,Double> itemPriceList = new HashMap<String,Double>();
   
   //Items with its  Marked down price HashMap
-  HashMap<String,Double> itemMarkedDownPriceList = new HashMap<String,Double>();
+  public HashMap<String,Double> itemMarkedDownPriceList = new HashMap<String,Double>();
   
   //weekly special items
   HashMap<String,String> weeklySpecials = new HashMap<String,String>();
@@ -36,42 +33,52 @@ public class ProcessItems {
 	  
 	  
 	// Put default items to the itemUOM map
-  itemUOM.put("pepsi", "ea");
-  itemUOM.put("soup", "ea");
-  itemUOM.put("oranges", "lb");
-  itemUOM.put("onions", "lb");
-  itemUOM.put("avocado", "ea");
-  itemUOM.put("pineapple","ea");
-  itemUOM.put("cauliflower","ea");
-  itemUOM.put("celery","ea");
+  itemUOM.put("Pepsi", "ea");
+  itemUOM.put("Soup", "ea");
+  itemUOM.put("Oranges", "lb");
+  itemUOM.put("Onions", "lb");
+  itemUOM.put("Avocado", "ea");
+  itemUOM.put("Pineapple","ea");
+  itemUOM.put("Cauliflower","ea");
+  itemUOM.put("Celery","ea");
   itemUOM.put("Eggs","ea");
+  itemUOM.put("Cookies","ea");
 
   
 //Put default items to the itemPriceList map
-  itemPriceList.put("pepsi", 1.5);
-  itemPriceList.put("soup",1.20);
-  itemPriceList.put("oranges",1.40);
-  itemPriceList.put("onions",1.5);
-  itemPriceList.put("avocado",1.10);
-  itemPriceList.put("pineapple",1.29);
-  itemPriceList.put("cauliflower",2.50);
-  itemPriceList.put("celery",1.50);
+  itemPriceList.put("Pepsi", 1.5);
+  itemPriceList.put("Soup",1.20);
+  itemPriceList.put("Oranges",1.40);
+  itemPriceList.put("Onions",1.5);
+  itemPriceList.put("Avocado",1.10);
+  itemPriceList.put("Pineapple",1.29);
+  itemPriceList.put("Cauliflower",2.50);
+  itemPriceList.put("Celery",1.50);
   itemPriceList.put("Eggs",1.50);
+  itemPriceList.put("Cookies",2.0);
   
 //Put items to the itemMarkedDownPriceList map
   
-  itemMarkedDownPriceList.put("pineapple", 1.09);
-  itemMarkedDownPriceList.put("soup", 1.0);
-  itemMarkedDownPriceList.put("avocado", .50);
-  itemMarkedDownPriceList.put("pepsi", 1.20);
-  itemMarkedDownPriceList.put("cauliflower", 1.20);
-  //itemMarkedDownPriceList.put("celery", 0.99);
+  itemMarkedDownPriceList.put("Pineapple", 1.09);
+  itemMarkedDownPriceList.put("Soup", 1.0);
+  itemMarkedDownPriceList.put("Avocado", .50);
+  itemMarkedDownPriceList.put("Pepsi", 1.20);
+  itemMarkedDownPriceList.put("Cauliflower", 1.20);
+  //itemMarkedDownPriceList.put("Celery", 0.99);
   
   
   //Put items in the weeklySpecial map
-  weeklySpecials.put("Eggs", "BNGMPX-1:1:100:5");
-  weeklySpecials.put("celery", "BNGMPX-2:1:50:U");
+  //Pricing Rule Code - BNFX is for Buy N For X (e.g Buy 3 for 5)
+  //BNFX Rule format is "BNFX-<Number Of Items>:<Price>:<ItemLimit>
+  //ItemLimit U is equivalent to Unlimited
   
+  //Pricing Rule Code - BNGMPXF is for Buy N For X (e.g Buy 2 and get 50% off for additional 1 item)
+  //BNGMPXF Rule format is "BNGMPXF-<Number Of Items>:<Number Of Special Items>:<DiscountPercent>:<ItemLimit>
+  //ItemLimit U is equivalent to Unlimited
+  
+  weeklySpecials.put("Eggs", "BNGMPX-1:1:100:5");
+  weeklySpecials.put("Celery", "BNGMPX-2:1:50:U");
+  weeklySpecials.put("Cookies", "BNFX-3:5:9");
   
   }
   
@@ -83,7 +90,8 @@ public class ProcessItems {
 	  while(ScanContinue)
 	  {
 	  
-	  item= scanner.next();
+	  //item= scanner.next().toUpperCase();
+		  item= scanner.next();
 	   if (item.equalsIgnoreCase("R"))
 	  {
 		  ScanContinue = false;
@@ -123,19 +131,23 @@ public class ProcessItems {
    
   //Method to get the items corresponding Unit of Measurement
   public String getItemUOM(String item){ 
-	  
-  String uOM = itemUOM.get(item);  
-  
-  return uOM;
+	  String uOM = "";
+	  if(itemUOM.get(item)!=null)  
+	{
+   uOM = itemUOM.get(item);  
+	}else{
+	System.out.println("UOM Not Maintained, Enter UOM lb or ea");
+	uOM = scanner.next();
+	}
+		
+	  return uOM;
   
  }
   
   //Method to calculate the price of the item
   public double getItemPrice(String item,double noOfUnits){
-	  //getting the item's price from the marked down list
 	 
-	  
-	  if(itemPriceList.get(item) == null){
+	   if(itemPriceList.get(item) == null){
 		  price = 0;
 	  }
 	  else{
@@ -149,7 +161,7 @@ public class ProcessItems {
   public double cancelItem(){
 	  double cancelledNumsOfUnit=0;
 	  System.out.println("Enter the item you want to cancel: ");
-	  item= scanner.next();
+	  item= scanner.next().toUpperCase();
 	   if (getItemUOM(item).equals("ea")){
 		  System.out.println("Enter the quantity of items to cancel: ");
 		  quantity = scanner.nextDouble();
@@ -171,45 +183,26 @@ public class ProcessItems {
 	  double standardPrice = 0;
 	  
 	  standardPrice = getItemPrice(printItem,printNumsOfUnit);
+	  //Check the markdown price
 	  specialsPrice = getItemMarkedDownPrice(printItem,printNumsOfUnit);
 	  //If MarkDown is not maintained then check the weekly special rules
 	      if(specialsPrice==0 & !(weeklySpecials.get(item) == null))
+	    	  
 	      {
 	    	  String ruleName = weeklySpecials.get(item);
+	    	  SpecialRules sr = new SpecialRules();
+	           //Check if item is marked for pricing rule BNGMPX
 	    	    if (ruleName.startsWith("BNGMPX"))
 	    			   {		   
-	    	           SpecialRules sr = new SpecialRules();
-	    	           ruleName = ruleName.replaceAll("BNGMPX-", "");
-	    	           String[] splittedValues = ruleName.split(":");
-	    	           
-	    	           double noOfItemsRule = Double.valueOf(splittedValues[0]);
-	    	           double noOfSpecialItemsRule = Double.valueOf(splittedValues[1]);
-	    	           double discountRate = Double.valueOf(splittedValues[2]);
-	    	           double ItemLimit = 0;
-	    	           if(!splittedValues[3].equals("U"))
-	    	        		   {
-	    	        	         ItemLimit = Double.valueOf(splittedValues[3]);
-	    	        		   }
-	    	           
-	    	           //Check Allowed Limits. Process only if allowed number of units	    	        			 
-	    	           if(ItemLimit > printNumsOfUnit || splittedValues[3].equals("U"))
-	    	           {
-	    	        	 // Calculate Quantities based on Rules and Input
-	    	        	  // If the rule says Buy 1 Get 1 free and user bought 100 items so only 50 items will be charged
-	    	        	   double WeightageRemainder = printNumsOfUnit % (noOfItemsRule+noOfSpecialItemsRule);
-	    	        	   // Make sure to have the quantity which can be distributed as per rule
-	    	        	   printNumsOfUnit = printNumsOfUnit - WeightageRemainder;
-	    	        	   double noOfItems = printNumsOfUnit * (noOfItemsRule/(noOfItemsRule+noOfSpecialItemsRule));
-	    	        	   double noOfSpecialItems = printNumsOfUnit * (noOfSpecialItemsRule/(noOfItemsRule+noOfSpecialItemsRule));
-	    	        	   
-	    	        	   specialsPrice = sr.getPriceBNGMPX(printItem, noOfItems, noOfSpecialItems, discountRate);
-	    	            // Add the Standard Price of Remainder
-	    	        	   specialsPrice = specialsPrice + getItemPrice(printItem,WeightageRemainder);
+	    	      
+	    	    	specialsPrice = sr.calculatePriceBNGMPX(printItem,printNumsOfUnit,ruleName);
+	    	    	//Check if item is marked for pricing rule BNFX
+	      }   else if (ruleName.startsWith("BNFX"))
+	    			   {		   
+	    	      
+	    	    	specialsPrice = sr.calculatePriceBNFX(printItem,printNumsOfUnit,ruleName);
 	    			   }
-	    	  
-	      
-	      }
-	  }
+     	  }
 	  
 	  
 			  if(specialsPrice>0){
@@ -225,11 +218,14 @@ public class ProcessItems {
 				  System.out.println("Total is : "+checkoutTotal);
 			  }
 			  
+			  
 	  
   }
   
   //Method to calculate the marked down price of item
   public double getItemMarkedDownPrice(String item,double noOfUnits){
+	   
+        
 	  Double markedDownItemPrice = itemMarkedDownPriceList.get(item);
 	  
 	  if(markedDownItemPrice == null){
@@ -241,4 +237,5 @@ public class ProcessItems {
 	  return price;
 	  
   }
+
 }

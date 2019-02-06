@@ -1,5 +1,5 @@
 package com.suruchi.pos;
-import java.util.HashMap;
+//Main program for Checkout Order Total Kata
 
 public class POSCheckout {
 

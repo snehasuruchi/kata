@@ -76,7 +76,7 @@ public class CheckoutTest {
 		
 		}
 	
-	//To test weekly specials
+	//To test weekly specials BNGMPXF ( Buy N Get X% off on additional M items)
 	@Test
 	public void testGetPriceBNGMPXFor3Celery(){
 		SpecialRules sr = new SpecialRules();
@@ -86,7 +86,7 @@ public class CheckoutTest {
 		
 	}
 	
-	//To test the weekly special and marked down
+	//To test the weekly special BNGMPXF ( Buy N Get X% off on additional M items) and marked down
 	@Test
 	public void checkTotalPriceFor1PepsiAnd2Eggs(){
 		pitems.processInputItem();
@@ -95,4 +95,15 @@ public class CheckoutTest {
 		assertEquals("2.7",priceStr);
 		
 	}
+	
+	//To test weekly specials BNFX ( Buy N For X)
+		@Test
+		public void testcalculatePriceBNFXFor9Cookies(){
+			SpecialRules sr = new SpecialRules();
+		    price =	sr.calculatePriceBNFX("Cookies",9,"BNFX-3:5:9");
+		    String priceStr = Double.toString(price);
+		    assertEquals("15.0",priceStr);
+			
+		}
+	
 }
